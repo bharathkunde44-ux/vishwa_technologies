@@ -13,7 +13,17 @@ const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
 
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        "frame-src": ["'self'", "https://www.google.com"],
+        "script-src": ["'self'", "https://www.google.com"],
+        "img-src": ["'self'", "data:", "https://*.google.com", "https://*.googleusercontent.com", "https://*.gstatic.com"],
+      },
+    },
+  })
+);
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || "http://localhost:3000",

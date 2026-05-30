@@ -40,15 +40,16 @@ function formatHtml(details) {
 }
 
 async function sendOwnerEmail(subject, details, attachments = []) {
-  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD || !process.env.OWNER_EMAIL) {
-    console.warn("Email skipped. Configure GMAIL_USER, GMAIL_APP_PASSWORD, and OWNER_EMAIL.");
+  const missing = ["GMAIL_USER", "GMAIL_APP_PASSWORD", "OWNER_EMAIL"].filter((key) => !process.env[key]);
+  if (missing.length > 0) {
+    console.warn(`Email skipped. Missing environment variables: ${missing.join(", ")}`);
     return;
   }
 
   const transporter = createTransporter();
   const text = formatDetails(details);
 
-  await transporter.sendMail({
+  const info = await transporter.sendMail({
     from: `"CCTV Service Website" <${process.env.GMAIL_USER}>`,
     to: process.env.OWNER_EMAIL,
     subject,
@@ -56,6 +57,12 @@ async function sendOwnerEmail(subject, details, attachments = []) {
     text,
     html: formatHtml(details),
     attachments,
+  });
+
+  console.log("Owner email sent", {
+    to: process.env.OWNER_EMAIL,
+    subject,
+    messageId: info.messageId,
   });
 }
 
