@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: cctv-booking-project
+    env: node
+    plan: free
+    buildCommand: npm install --prefix backend && npm install --prefix cctv-booking-frontend && npm run build --prefix cctv-booking-frontend
+    startCommand: npm start --prefix backend
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: DB_SSL
+        value: "true"
+      - key: DB_SSL_REJECT_UNAUTHORIZED
+        value: "false"
+      - key: GMAIL_USER
+        sync: false
+      - key: GMAIL_APP_PASSWORD
+        sync: false
+      - key: OWNER_EMAIL
+        sync: false
+      - key: ADMIN_API_KEY
+        sync: false
