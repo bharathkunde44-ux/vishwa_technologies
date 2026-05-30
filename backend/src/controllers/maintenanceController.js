@@ -1,6 +1,6 @@
 const path = require("path");
 const { pool } = require("../config/db");
-const { sendOwnerEmail } = require("../config/mailer");
+const { sendOwnerEmailInBackground } = require("../config/mailer");
 const { requireFields, validateEmail } = require("../utils/validators");
 
 async function createMaintenanceRequest(req, res, next) {
@@ -27,7 +27,7 @@ async function createMaintenanceRequest(req, res, next) {
         ]
       : [];
 
-    await sendOwnerEmail(
+    sendOwnerEmailInBackground(
       "New CCTV Maintenance Request",
       {
         "Request ID": result.insertId,

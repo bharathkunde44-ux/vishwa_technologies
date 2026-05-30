@@ -1,5 +1,5 @@
 const { pool, getDbInfo } = require("../config/db");
-const { sendOwnerEmail } = require("../config/mailer");
+const { sendOwnerEmailInBackground } = require("../config/mailer");
 const { requireFields, validateEmail } = require("../utils/validators");
 
 async function createBooking(req, res, next) {
@@ -59,7 +59,7 @@ async function createBooking(req, res, next) {
       affectedRows: result.affectedRows,
     });
 
-    await sendOwnerEmail("New CCTV Booking Request", {
+    sendOwnerEmailInBackground("New CCTV Booking Request", {
       "Booking ID": result.insertId,
       Status: "Pending",
       "Customer name": fullName,

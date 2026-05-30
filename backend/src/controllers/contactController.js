@@ -1,5 +1,5 @@
 const { pool } = require("../config/db");
-const { sendOwnerEmail } = require("../config/mailer");
+const { sendOwnerEmailInBackground } = require("../config/mailer");
 const { requireFields, validateEmail } = require("../utils/validators");
 
 async function createContact(req, res, next) {
@@ -15,7 +15,7 @@ async function createContact(req, res, next) {
       [name, phone, email, serviceType || null, location || null, message]
     );
 
-    await sendOwnerEmail("New CCTV Website Contact", {
+    sendOwnerEmailInBackground("New CCTV Website Contact", {
       "Contact ID": result.insertId,
       "Customer name": name,
       Phone: phone,

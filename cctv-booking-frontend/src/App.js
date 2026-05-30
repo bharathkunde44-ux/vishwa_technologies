@@ -78,6 +78,7 @@ function App() {
   const [maintenance, setMaintenance] = useState(emptyMaintenance);
   const [contact, setContact] = useState(emptyContact);
   const [alerts, setAlerts] = useState({});
+  const [submitting, setSubmitting] = useState({});
   const today = useMemo(() => new Date().toISOString().split("T")[0], []);
 
   const request = async (path, options = {}) => {
@@ -130,6 +131,7 @@ function App() {
 
   const handleContactSubmit = async (event) => {
     event.preventDefault();
+    setSubmitting((current) => ({ ...current, contact: true }));
     try {
       const data = await request("/contacts", {
         method: "POST",
@@ -140,6 +142,8 @@ function App() {
       setAlert("contact", "success", data.message);
     } catch (error) {
       setAlert("contact", "error", error.message);
+    } finally {
+      setSubmitting((current) => ({ ...current, contact: false }));
     }
   };
 
@@ -171,7 +175,7 @@ function App() {
         />
       )}
       {page === "contact" && (
-        <ContactPage contact={contact} setContact={setContact} alert={alerts.contact} onSubmit={handleContactSubmit} />
+        <ContactPage contact={contact} setContact={setContact} alert={alerts.contact} onSubmit={handleContactSubmit} submitting={submitting.contact} />
       )}
       <FloatingWhatsApp />
       <Footer navigate={navigate} />
@@ -395,7 +399,7 @@ function MaintenancePage({ maintenance, setMaintenance, today, alert, onSubmit }
   );
 }
 
-function ContactPage({ contact, setContact, alert, onSubmit }) {
+function ContactPage({ contact, setContact, alert, onSubmit, submitting }) {
   return (
     <PageShell eyebrow="Contact" title="Talk to a CCTV specialist" subtitle="Send a message, call directly, or reach us on WhatsApp for faster support.">
       <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
@@ -421,7 +425,7 @@ function ContactPage({ contact, setContact, alert, onSubmit }) {
           <Select label="Service type" value={contact.serviceType} onChange={(v) => setContact({ ...contact, serviceType: v })} options={["", ...serviceTypes]} />
           <Input icon={<MapPin />} label="Location" value={contact.location} onChange={(v) => setContact({ ...contact, location: v })} />
           <TextArea className="md:col-span-2" label="Customer message" value={contact.message} onChange={(v) => setContact({ ...contact, message: v })} required />
-          <div className="md:col-span-2"><PrimaryButton type="submit">Send Message</PrimaryButton></div>
+          <div className="md:col-span-2"><PrimaryButton type="submit" disabled={submitting}>{submitting ? "Sending..." : "Send Message"}</PrimaryButton></div>
         </form>
       </div>
     </PageShell>
@@ -521,7 +525,7 @@ function Badge({ icon, text }) {
 }
 
 function PrimaryButton({ children, ...props }) {
-  return <button {...props} className="blue-glow inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-sky-400 to-blue-700 px-7 py-4 font-black text-white transition hover:-translate-y-0.5 hover:shadow-glow">{children}<ArrowRight size={18} /></button>;
+  return <button {...props} className="blue-glow inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-sky-400 to-blue-700 px-7 py-4 font-black text-white transition hover:-translate-y-0.5 hover:shadow-glow disabled:cursor-not-allowed disabled:opacity-60">{children}<ArrowRight size={18} /></button>;
 }
 
 function SecondaryButton({ children, ...props }) {

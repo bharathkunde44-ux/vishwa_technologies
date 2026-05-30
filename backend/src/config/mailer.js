@@ -3,6 +3,9 @@ const nodemailer = require("nodemailer");
 function createTransporter() {
   return nodemailer.createTransport({
     service: "gmail",
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 15000,
     auth: {
       user: process.env.GMAIL_USER,
       pass: process.env.GMAIL_APP_PASSWORD.replace(/\s/g, ""),
@@ -56,6 +59,13 @@ async function sendOwnerEmail(subject, details, attachments = []) {
   });
 }
 
+function sendOwnerEmailInBackground(subject, details, attachments = []) {
+  sendOwnerEmail(subject, details, attachments).catch((error) => {
+    console.error("Owner email failed:", error.message);
+  });
+}
+
 module.exports = {
   sendOwnerEmail,
+  sendOwnerEmailInBackground,
 };
