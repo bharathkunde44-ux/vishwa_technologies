@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+const fs = require("fs/promises");
 
 function createTransporter() {
   return nodemailer.createTransport({
@@ -40,9 +41,20 @@ function formatHtml(details) {
 }
 
 async function sendOwnerEmail(subject, details, attachments = []) {
-  const missing = ["GMAIL_USER", "GMAIL_APP_PASSWORD", "OWNER_EMAIL"].filter((key) => !process.env[key]);
+  const missing = ["OWNER_EMAIL"].filter((key) => !process.env[key]);
   if (missing.length > 0) {
     console.warn(`Email skipped. Missing environment variables: ${missing.join(", ")}`);
+    return;
+  }
+
+  if (process.env.RESEND_API_KEY) {
+    await sendWithResend(subject, details, attachments);
+    return;
+  }
+
+  const smtpMissing = ["GMAIL_USER", "GMAIL_APP_PASSWORD"].filter((key) => !process.env[key]);
+  if (smtpMissing.length > 0) {
+    console.warn(`Email skipped. Missing environment variables: ${smtpMissing.join(", ")}`);
     return;
   }
 
@@ -63,6 +75,48 @@ async function sendOwnerEmail(subject, details, attachments = []) {
     to: process.env.OWNER_EMAIL,
     subject,
     messageId: info.messageId,
+  });
+}
+
+async function formatResendAttachments(attachments) {
+  return Promise.all(
+    attachments.map(async (attachment) => ({
+      filename: attachment.filename,
+      content: await fs.readFile(attachment.path, "base64"),
+    }))
+  );
+}
+
+async function sendWithResend(subject, details, attachments = []) {
+  const from = process.env.EMAIL_FROM || "CCTV Service Website <onboarding@resend.dev>";
+  const text = formatDetails(details);
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from,
+      to: [process.env.OWNER_EMAIL],
+      subject,
+      reply_to: details.Email || undefined,
+      text,
+      html: formatHtml(details),
+      attachments: await formatResendAttachments(attachments),
+    }),
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data.message || `Resend email failed with status ${response.status}`);
+  }
+
+  console.log("Owner email sent", {
+    provider: "resend",
+    to: process.env.OWNER_EMAIL,
+    subject,
+    messageId: data.id,
   });
 }
 
