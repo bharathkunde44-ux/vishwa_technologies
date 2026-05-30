@@ -103,6 +103,13 @@ async function deleteContact(req, res, next) {
 
 async function testOwnerEmail(req, res, next) {
   try {
+    const missing = ["GMAIL_USER", "GMAIL_APP_PASSWORD", "OWNER_EMAIL"].filter((key) => !process.env[key]);
+    if (missing.length > 0) {
+      const error = new Error(`Missing email environment variables: ${missing.join(", ")}`);
+      error.status = 500;
+      throw error;
+    }
+
     await sendOwnerEmail("CCTV Website Email Test", {
       Source: "Admin email test",
       Status: "Render can send owner emails",
