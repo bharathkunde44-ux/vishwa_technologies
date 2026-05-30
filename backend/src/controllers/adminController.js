@@ -1,4 +1,5 @@
 const { pool } = require("../config/db");
+const { sendOwnerEmail } = require("../config/mailer");
 const { validateStatus } = require("../utils/validators");
 
 function searchSql(search, fields) {
@@ -100,6 +101,20 @@ async function deleteContact(req, res, next) {
   }
 }
 
+async function testOwnerEmail(req, res, next) {
+  try {
+    await sendOwnerEmail("CCTV Website Email Test", {
+      Source: "Admin email test",
+      Status: "Render can send owner emails",
+      Time: new Date().toISOString(),
+    });
+
+    res.json({ message: "Test email sent successfully." });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   getBookings,
   getMaintenanceRequests,
@@ -109,4 +124,5 @@ module.exports = {
   deleteBooking,
   deleteMaintenanceRequest,
   deleteContact,
+  testOwnerEmail,
 };

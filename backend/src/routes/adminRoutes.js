@@ -9,6 +9,7 @@ const {
   deleteBooking,
   deleteMaintenanceRequest,
   deleteContact,
+  testOwnerEmail,
 } = require("../controllers/adminController");
 
 const router = express.Router();
@@ -18,6 +19,7 @@ router.use(adminAuth);
 router.get("/bookings", getBookings);
 router.get("/maintenance", getMaintenanceRequests);
 router.get("/contacts", getContacts);
+router.post("/test-email", testOwnerEmail);
 router.patch("/bookings/:id/status", updateBookingStatus);
 router.patch("/maintenance/:id/status", updateMaintenanceStatus);
 router.delete("/bookings/:id", deleteBooking);
