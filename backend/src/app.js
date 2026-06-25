@@ -24,9 +24,21 @@ app.use(
     },
   })
 );
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "http://localhost:5173",
+  "http://localhost:5174"
+].filter(Boolean);
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      callback(new Error("CORS policy does not allow access from the specified origin."));
+    },
   })
 );
 app.use(express.json({ limit: "1mb" }));
@@ -51,7 +63,7 @@ app.use("/api/maintenance", maintenanceRoutes);
 app.use("/api/contacts", contactRoutes);
 app.use("/api/admin", adminRoutes);
 
-const frontendBuildPath = path.join(__dirname, "..", "..", "cctv-booking-frontend", "build");
+const frontendBuildPath = path.join(__dirname, "..", "..", "vishwa-frontend", "dist");
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(frontendBuildPath));

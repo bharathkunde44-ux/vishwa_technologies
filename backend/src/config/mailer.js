@@ -2,6 +2,22 @@ const nodemailer = require("nodemailer");
 const fs = require("fs/promises");
 
 function createTransporter() {
+  if (process.env.SMTP_HOST) {
+    const port = Number(process.env.SMTP_PORT || 465);
+    return nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: port,
+      secure: port === 465 || process.env.SMTP_SECURE === "true",
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+  }
+
   return nodemailer.createTransport({
     service: "gmail",
     connectionTimeout: 10000,
@@ -9,7 +25,7 @@ function createTransporter() {
     socketTimeout: 15000,
     auth: {
       user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASSWORD.replace(/\s/g, ""),
+      pass: process.env.GMAIL_APP_PASSWORD ? process.env.GMAIL_APP_PASSWORD.replace(/\s/g, "") : "",
     },
   });
 }
@@ -35,7 +51,7 @@ function formatHtml(details) {
 
   return `
     <div style="font-family:Arial,sans-serif;color:#172026">
-      <h2 style="margin:0 0 16px;color:#0c43a2">THRINAINA Electronic Security System</h2>
+      <h2 style="margin:0 0 16px;color:#0fa596">Vishwa Technologies</h2>
       <table style="border-collapse:collapse;width:100%;max-width:720px">${rows}</table>
     </div>`;
 }
@@ -52,7 +68,11 @@ async function sendOwnerEmail(subject, details, attachments = []) {
     return;
   }
 
-  const smtpMissing = ["GMAIL_USER", "GMAIL_APP_PASSWORD"].filter((key) => !process.env[key]);
+  const isCustomSmtp = !!process.env.SMTP_HOST;
+  const smtpMissing = isCustomSmtp
+    ? ["SMTP_USER", "SMTP_PASS"].filter((key) => !process.env[key])
+    : ["GMAIL_USER", "GMAIL_APP_PASSWORD"].filter((key) => !process.env[key]);
+
   if (smtpMissing.length > 0) {
     console.warn(`Email skipped. Missing environment variables: ${smtpMissing.join(", ")}`);
     return;
@@ -60,12 +80,13 @@ async function sendOwnerEmail(subject, details, attachments = []) {
 
   const transporter = createTransporter();
   const text = formatDetails(details);
+  const fromEmail = process.env.SMTP_USER || process.env.GMAIL_USER;
 
   const info = await transporter.sendMail({
-    from: `"CCTV Service Website" <${process.env.GMAIL_USER}>`,
+    from: `"CCTV Service Website" <${fromEmail}>`,
     to: process.env.OWNER_EMAIL,
     subject,
-    replyTo: details.Email || process.env.GMAIL_USER,
+    replyTo: details.Email || fromEmail,
     text,
     html: formatHtml(details),
     attachments,
@@ -75,6 +96,70 @@ async function sendOwnerEmail(subject, details, attachments = []) {
     to: process.env.OWNER_EMAIL,
     subject,
     messageId: info.messageId,
+  });
+}
+
+async function sendCustomerEmail(to, subject, details) {
+  if (!to) {
+    return;
+  }
+
+  if (process.env.RESEND_API_KEY) {
+    await sendCustomerEmailWithResend(to, subject, details);
+    return;
+  }
+
+  const isCustomSmtp = !!process.env.SMTP_HOST;
+  const smtpMissing = isCustomSmtp
+    ? ["SMTP_USER", "SMTP_PASS"].filter((key) => !process.env[key])
+    : ["GMAIL_USER", "GMAIL_APP_PASSWORD"].filter((key) => !process.env[key]);
+
+  if (smtpMissing.length > 0) {
+    console.warn(`Customer email skipped. Missing environment variables: ${smtpMissing.join(", ")}`);
+    return;
+  }
+
+  const transporter = createTransporter();
+  const fromEmail = process.env.SMTP_USER || process.env.GMAIL_USER;
+  const info = await transporter.sendMail({
+    from: `"CCTV Service Team" <${fromEmail}>`,
+    to,
+    subject,
+    text: formatDetails(details),
+    html: formatHtml(details),
+  });
+
+  console.log("Customer email sent", { to, subject, messageId: info.messageId });
+}
+
+async function sendCustomerEmailWithResend(to, subject, details) {
+  const from = process.env.EMAIL_FROM || "CCTV Service Website <onboarding@resend.dev>";
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      from,
+      to: [to],
+      subject,
+      text: formatDetails(details),
+      html: formatHtml(details),
+    }),
+  });
+
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    throw new Error(data.message || `Resend customer email failed with status ${response.status}`);
+  }
+
+  console.log("Customer email sent", { provider: "resend", to, subject, messageId: data.id });
+}
+
+function sendCustomerEmailInBackground(to, subject, details) {
+  sendCustomerEmail(to, subject, details).catch((error) => {
+    console.error("Customer email failed:", error.message);
   });
 }
 
@@ -129,4 +214,6 @@ function sendOwnerEmailInBackground(subject, details, attachments = []) {
 module.exports = {
   sendOwnerEmail,
   sendOwnerEmailInBackground,
+  sendCustomerEmail,
+  sendCustomerEmailInBackground,
 };

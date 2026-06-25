@@ -1,0 +1,17 @@
+export const customers = [
+  { id: 1, name: 'Ramesh Babu', email: 'ramesh.babu@email.com', phone: '+91 94401 23456', location: 'Jubilee Hills, Hyderabad', totalBookings: 3, totalSpent: 62000, lastActivity: '2025-06-14', status: 'Active' },
+  { id: 2, name: 'Sita Devi', email: 'sita.devi@email.com', phone: '+91 98765 43210', location: 'Banjara Hills, Hyderabad', totalBookings: 2, totalSpent: 40000, lastActivity: '2025-06-13', status: 'Active' },
+  { id: 3, name: 'Venkat Rao', email: 'venkat.rao@email.com', phone: '+91 90001 12345', location: 'Begumpet, Secunderabad', totalBookings: 5, totalSpent: 98000, lastActivity: '2025-06-12', status: 'Active' },
+  { id: 4, name: 'Priya Reddy', email: 'priya.reddy@email.com', phone: '+91 87654 32100', location: 'HITEC City, Hyderabad', totalBookings: 1, totalSpent: 35000, lastActivity: '2025-06-11', status: 'Active' },
+  { id: 5, name: 'Naveen Kumar', email: 'naveen.kumar@email.com', phone: '+91 99887 76655', location: 'Kukatpally, Hyderabad', totalBookings: 2, totalSpent: 36000, lastActivity: '2025-06-10', status: 'Active' },
+  { id: 6, name: 'Lakshmi Prasad', email: 'lakshmi.prasad@email.com', phone: '+91 93456 78901', location: 'Ameerpet, Hyderabad', totalBookings: 4, totalSpent: 75000, lastActivity: '2025-06-09', status: 'Active' },
+  { id: 7, name: 'Suresh Goud', email: 'suresh.goud@email.com', phone: '+91 88776 65544', location: 'Malkajgiri, Secunderabad', totalBookings: 2, totalSpent: 56000, lastActivity: '2025-06-08', status: 'Active' },
+  { id: 8, name: 'Anitha Kumari', email: 'anitha.kumari@email.com', phone: '+91 97654 32109', location: 'Dilsukhnagar, Hyderabad', totalBookings: 1, totalSpent: 5000, lastActivity: '2025-06-07', status: 'Inactive' },
+  { id: 9, name: 'Mahesh Babu', email: 'mahesh.b@email.com', phone: '+91 91234 56789', location: 'LB Nagar, Hyderabad', totalBookings: 3, totalSpent: 44000, lastActivity: '2025-06-06', status: 'Active' },
+  { id: 10, name: 'Deepa Nair', email: 'deepa.nair@email.com', phone: '+91 96543 21098', location: 'Madhapur, Hyderabad', totalBookings: 1, totalSpent: 20000, lastActivity: '2025-06-05', status: 'Active' },
+  { id: 11, name: 'Raju Verma', email: 'raju.verma@email.com', phone: '+91 94321 09876', location: 'Tarnaka, Secunderabad', totalBookings: 6, totalSpent: 125000, lastActivity: '2025-06-04', status: 'Active' },
+  { id: 12, name: 'Swathi Reddy', email: 'swathi.r@email.com', phone: '+91 98210 98765', location: 'Kondapur, Hyderabad', totalBookings: 1, totalSpent: 7500, lastActivity: '2025-06-03', status: 'Active' },
+  { id: 13, name: 'Kiran Tej', email: 'kiran.tej@email.com', phone: '+91 90876 54321', location: 'Uppal, Hyderabad', totalBookings: 2, totalSpent: 78000, lastActivity: '2025-06-02', status: 'Active' },
+  { id: 14, name: 'Padma Rani', email: 'padma.rani@email.com', phone: '+91 87650 43219', location: 'Secunderabad', totalBookings: 4, totalSpent: 60000, lastActivity: '2025-06-01', status: 'Active' },
+  { id: 15, name: 'Arun Prasad', email: 'arun.p@email.com', phone: '+91 99001 23456', location: 'Miyapur, Hyderabad', totalBookings: 1, totalSpent: 42000, lastActivity: '2025-05-30', status: 'Inactive' },
+];
