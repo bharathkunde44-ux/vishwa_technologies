@@ -3,7 +3,7 @@ services:
     name: vishwa-technologies
     env: node
     plan: free
-    buildCommand: npm install --prefix backend && npm install --prefix vishwa-frontend && npm run build --prefix vishwa-frontend
+    buildCommand: npm install --prefix backend && npm install --include=dev --prefix vishwa-frontend && npm run build --prefix vishwa-frontend
     startCommand: npm start --prefix backend
     envVars:
       - key: NODE_ENV
