@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiUser, FiMail, FiLock, FiSave, FiBell, FiMoon, FiMonitor, FiSun } from 'react-icons/fi';
-import Button from '../../components/ui/Button';
+import Button from '../components/ui/Button';
 
 export default function SettingsPage() {
   const [profile, setProfile] = useState({

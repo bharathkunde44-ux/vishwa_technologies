@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiSearch, FiEye, FiTrash2, FiChevronLeft, FiChevronRight, FiImage } from 'react-icons/fi';
-import StatusBadge from '../../components/ui/StatusBadge';
-import Modal from '../../components/ui/Modal';
+import StatusBadge from '../components/ui/StatusBadge';
+import Modal from '../components/ui/Modal';
 
 const statuses = ['All', 'Pending', 'Assigned', 'In Progress', 'Completed'];
 const priorities = ['All', 'Low', 'Medium', 'High', 'Urgent'];

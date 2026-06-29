@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiCalendar, FiClock, FiCheckCircle, FiTrendingUp, FiArrowUpRight, FiArrowDownRight } from 'react-icons/fi';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import StatusBadge from '../../components/ui/StatusBadge';
+import StatusBadge from '../components/ui/StatusBadge';
 
 const formatMonth = (label) => {
   if (!label) return '';

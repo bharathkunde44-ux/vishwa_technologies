@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FiSearch, FiEye, FiChevronLeft, FiChevronRight, FiCalendar, FiTool, FiMessageSquare } from 'react-icons/fi';
-import StatusBadge from '../../components/ui/StatusBadge';
-import Modal from '../../components/ui/Modal';
+import StatusBadge from '../components/ui/StatusBadge';
+import Modal from '../components/ui/Modal';
 
 export default function CustomersPage() {
   const [search, setSearch] = useState('');

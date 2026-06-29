@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { FiMail, FiLock, FiEye, FiEyeOff, FiArrowLeft } from 'react-icons/fi';
-import Button from '../../components/ui/Button';
+import Button from '../components/ui/Button';
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
