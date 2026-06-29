@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { FiGrid, FiCalendar, FiUsers, FiTool, FiBarChart2, FiBell, FiSettings, FiLogOut, FiMenu, FiX, FiShield, FiChevronLeft } from 'react-icons/fi';
-import DashboardOverview from '../../pages/admin/DashboardOverview';
-import BookingsPage from '../../pages/admin/BookingsPage';
-import CustomersPage from '../../pages/admin/CustomersPage';
-import AdminServicesPage from '../../pages/admin/AdminServicesPage';
-import AnalyticsPage from '../../pages/admin/AnalyticsPage';
-import NotificationsPage from '../../pages/admin/NotificationsPage';
-import SettingsPage from '../../pages/admin/SettingsPage';
+import DashboardOverview from '../pages/DashboardOverview';
+import BookingsPage from '../pages/BookingsPage';
+import CustomersPage from '../pages/CustomersPage';
+import AdminServicesPage from '../pages/AdminServicesPage';
+import AnalyticsPage from '../pages/AnalyticsPage';
+import NotificationsPage from '../pages/NotificationsPage';
+import SettingsPage from '../pages/SettingsPage';
 
 const navItems = [
   { path: '/admin/dashboard', label: 'Dashboard', icon: FiGrid },

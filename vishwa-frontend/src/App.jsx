@@ -4,9 +4,7 @@ import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import FloatingWhatsApp from './components/layout/FloatingWhatsApp';
-import AdminLayout from './components/admin/AdminLayout';
-import AdminLoginPage from './pages/admin/AdminLoginPage';
-import ProtectedRoute from './components/admin/ProtectedRoute';
+
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import ServicesPage from './pages/ServicesPage';
@@ -23,24 +21,6 @@ function ScrollToTop() {
   return null;
 }
 
-function AdminRoute() {
-  const token = localStorage.getItem('admin_token') || sessionStorage.getItem('admin_token');
-  const isAuthenticated = !!token;
-
-  if (isAuthenticated) {
-    if (!sessionStorage.getItem('admin_token')) {
-      sessionStorage.setItem('admin_token', token);
-      sessionStorage.setItem('admin_authenticated', 'true');
-      const savedUser = localStorage.getItem('admin_user');
-      if (savedUser) {
-        sessionStorage.setItem('admin_user', savedUser);
-      }
-    }
-    return <Navigate to="/admin/dashboard" replace />;
-  }
-
-  return <AdminLoginPage />;
-}
 
 function PublicLayout() {
   return (
@@ -163,15 +143,7 @@ export default function App() {
           )}
         </AnimatePresence>
         <Routes>
-          <Route path="/admin" element={<AdminRoute />} />
-          <Route
-            path="/admin/*"
-            element={
-              <ProtectedRoute>
-                <AdminLayout />
-              </ProtectedRoute>
-            }
-          />
+
           <Route path="/*" element={<PublicLayout />} />
         </Routes>
       </div>
