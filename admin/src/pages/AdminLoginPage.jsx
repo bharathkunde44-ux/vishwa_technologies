@@ -74,7 +74,14 @@ export default function AdminLoginPage() {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
+      const contentType = res.headers.get('content-type');
+      let data = {};
+      if (contentType && contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        throw new Error(`Server connection failed (HTTP ${res.status}). Please check if the backend is running.`);
+      }
+
       if (!res.ok) {
         throw new Error(data.message || 'Invalid admin credentials');
       }
