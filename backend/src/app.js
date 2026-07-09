@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const path = require("path");
+const fs = require("fs");
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
@@ -69,7 +70,7 @@ app.use("/api/admin", adminRoutes);
 
 const frontendBuildPath = path.join(__dirname, "..", "..", "vishwa-frontend", "dist");
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "production" && fs.existsSync(frontendBuildPath)) {
   app.use(express.static(frontendBuildPath));
 
   // Serve index.html for all other routes to support React SPA routing.

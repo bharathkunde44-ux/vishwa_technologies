@@ -13,6 +13,15 @@ import ContactPage from './pages/ContactPage';
 import CinematicIntro from './components/layout/CinematicIntro';
 import { useLocation } from 'react-router-dom';
 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
+
+function resolveApiRequest(input) {
+  if (!API_BASE_URL || typeof input !== 'string' || !input.startsWith('/api')) {
+    return input;
+  }
+  return `${API_BASE_URL}${input}`;
+}
+
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -64,11 +73,12 @@ export default function App() {
 
     // Global fetch interceptor to handle auto logout on 401 Unauthorized responses
     const originalFetch = window.fetch;
-    window.fetch = async (...args) => {
+    window.fetch = async (input, init) => {
       try {
-        const response = await originalFetch(...args);
+        const request = resolveApiRequest(input);
+        const response = await originalFetch(request, init);
         if (response.status === 401) {
-          const url = typeof args[0] === 'string' ? args[0] : args[0]?.url || '';
+          const url = typeof request === 'string' ? request : request?.url || '';
           if (url.includes('/api/admin/') && !url.includes('/api/admin/login')) {
             localStorage.removeItem('admin_token');
             localStorage.removeItem('admin_authenticated');
