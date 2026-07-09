@@ -23,6 +23,8 @@ services:
         value: production
       - key: FRONTEND_URL
         value: https://vishwa-technologies.onrender.com
+      - key: ADMIN_FRONTEND_URL
+        value: https://vishwa-technologies-admin.onrender.com
       - key: DB_HOST
         sync: false
       - key: DB_PORT
