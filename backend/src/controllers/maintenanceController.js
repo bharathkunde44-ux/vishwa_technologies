@@ -1,11 +1,13 @@
 const path = require("path");
 const { pool } = require("../config/db");
 const { sendOwnerEmailInBackground } = require("../config/mailer");
-const { requireFields, validateEmail } = require("../utils/validators");
+const { requireFields, validateEmail, validateName, validatePhone } = require("../utils/validators");
 
 async function createMaintenanceRequest(req, res, next) {
   try {
     requireFields(req.body, ["name", "phone", "email", "issueDescription", "preferredVisitDate"]);
+    validateName(req.body.name, "Full name");
+    validatePhone(req.body.phone);
     validateEmail(req.body.email);
 
     const { name, phone, email, issueDescription, preferredVisitDate, message } = req.body;

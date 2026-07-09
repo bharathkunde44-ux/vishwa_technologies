@@ -1,6 +1,6 @@
 const { pool, getDbInfo } = require("../config/db");
 const { sendOwnerEmailInBackground } = require("../config/mailer");
-const { requireFields, validateEmail } = require("../utils/validators");
+const { requireFields, validateEmail, validateName, validatePhone } = require("../utils/validators");
 
 async function createBooking(req, res, next) {
   try {
@@ -14,6 +14,8 @@ async function createBooking(req, res, next) {
       "preferredDate",
       "preferredTime",
     ]);
+    validateName(req.body.fullName, "Full name");
+    validatePhone(req.body.phone);
     validateEmail(req.body.email);
 
     const {

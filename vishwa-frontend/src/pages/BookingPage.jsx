@@ -32,6 +32,9 @@ const emptyForm = {
   message: '',
 };
 
+const sanitizeName = (value) => value.replace(/[^A-Za-z\s.'-]/g, '');
+const sanitizePhone = (value) => value.replace(/[^\d+\s()-]/g, '');
+
 export default function BookingPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [form, setForm] = useState(emptyForm);
@@ -206,8 +209,8 @@ export default function BookingPage() {
             {currentStep === 0 && (
               <div className="space-y-5">
                 <h3 className="text-lg font-bold text-white mb-6">Personal Information</h3>
-                <FormField icon={<FiUser />} label="Full Name" value={form.name} onChange={(v) => update('name', v)} placeholder="Enter your full name" required />
-                <FormField icon={<FiPhone />} label="Phone Number" value={form.phone} onChange={(v) => update('phone', v)} placeholder="+91 XXXXX XXXXX" type="tel" required />
+                <FormField icon={<FiUser />} label="Full Name" value={form.name} onChange={(v) => update('name', sanitizeName(v))} placeholder="Enter your full name" required />
+                <FormField icon={<FiPhone />} label="Phone Number" value={form.phone} onChange={(v) => update('phone', sanitizePhone(v))} placeholder="+91 XXXXX XXXXX" type="tel" inputMode="tel" maxLength={18} required />
                 <FormField icon={<FiMail />} label="Email Address" value={form.email} onChange={(v) => update('email', v)} placeholder="your@email.com" type="email" required />
               </div>
             )}

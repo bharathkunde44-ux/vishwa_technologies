@@ -32,6 +32,9 @@ const contactInfo = [
   },
 ];
 
+const sanitizeName = (value) => value.replace(/[^A-Za-z\s.'-]/g, '');
+const sanitizePhone = (value) => value.replace(/[^\d+\s()-]/g, '');
+
 export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
   const [sent, setSent] = useState(false);
@@ -158,7 +161,7 @@ export default function ContactPage() {
           <div className="grid gap-5 md:grid-cols-2">
             <label className="grid gap-2 text-sm font-semibold text-slate-300">
               <span className="flex items-center gap-2"><FiUser size={14} className="text-electric" /> Full Name</span>
-              <input className="premium-input" value={form.name} onChange={(e) => update('name', e.target.value)} placeholder="Your name" required />
+              <input className="premium-input" value={form.name} onChange={(e) => update('name', sanitizeName(e.target.value))} placeholder="Your name" required />
             </label>
             <label className="grid gap-2 text-sm font-semibold text-slate-300">
               <span className="flex items-center gap-2"><FiMail size={14} className="text-electric" /> Email</span>
@@ -166,7 +169,7 @@ export default function ContactPage() {
             </label>
             <label className="grid gap-2 text-sm font-semibold text-slate-300">
               <span className="flex items-center gap-2"><FiPhone size={14} className="text-electric" /> Phone</span>
-              <input className="premium-input" type="tel" value={form.phone} onChange={(e) => update('phone', e.target.value)} placeholder="+91 XXXXX XXXXX" required />
+              <input className="premium-input" type="tel" inputMode="tel" maxLength={18} value={form.phone} onChange={(e) => update('phone', sanitizePhone(e.target.value))} placeholder="+91 XXXXX XXXXX" required />
             </label>
             <label className="grid gap-2 text-sm font-semibold text-slate-300">
               <span className="flex items-center gap-2"><FiSend size={14} className="text-electric" /> Subject</span>

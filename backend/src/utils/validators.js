@@ -15,6 +15,26 @@ function validateEmail(email) {
   }
 }
 
+function validateName(name, label = "Name") {
+  const value = String(name || "").trim();
+  if (!/^[A-Za-z][A-Za-z\s.'-]{1,79}$/.test(value)) {
+    const error = new Error(`${label} should contain letters only`);
+    error.status = 400;
+    throw error;
+  }
+}
+
+function validatePhone(phone) {
+  const value = String(phone || "").trim();
+  const digits = value.replace(/\D/g, "");
+
+  if (!/^\+?[0-9\s()-]+$/.test(value) || digits.length < 10 || digits.length > 15) {
+    const error = new Error("Please provide a valid phone number");
+    error.status = 400;
+    throw error;
+  }
+}
+
 function validateStatus(status) {
   const allowed = ["Pending", "Confirmed", "Scheduled", "In Progress", "Completed", "Cancelled"];
   if (!allowed.includes(status)) {
@@ -36,6 +56,8 @@ function validateMaintenanceStatus(status) {
 module.exports = {
   requireFields,
   validateEmail,
+  validateName,
+  validatePhone,
   validateStatus,
   validateMaintenanceStatus,
 };
