@@ -10,7 +10,7 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_BASE_URL
-        value: https://vishwa-technologies-api.onrender.com
+        value: https://vishwa-technologies-backend-api.onrender.com
 
   - type: web
     name: vishwa-technologies-api
