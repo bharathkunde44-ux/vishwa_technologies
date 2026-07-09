@@ -13,6 +13,9 @@ const adminRoutes = require("./routes/adminRoutes");
 
 const app = express();
 
+// Trust reverse proxy (Render, Heroku, etc.) to get correct client IP
+app.set("trust proxy", 1);
+
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -43,14 +46,15 @@ app.use(
 );
 app.use(express.json({ limit: "1mb" }));
 app.use(express.urlencoded({ extended: true }));
-app.use(
-  rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 150,
-    standardHeaders: true,
-    legacyHeaders: false,
-  })
-);
+
+// Apply rate limiter to /api routes only to prevent it from blocking static assets
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 150,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use("/api", apiLimiter);
 
 app.use("/uploads", express.static(path.join(__dirname, "..", "uploads")));
 
@@ -68,6 +72,7 @@ const frontendBuildPath = path.join(__dirname, "..", "..", "vishwa-frontend", "d
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(frontendBuildPath));
 
+  // Serve index.html for all other routes to support React SPA routing.
   app.get("/{*splat}", (req, res) => {
     res.sendFile(path.join(frontendBuildPath, "index.html"));
   });
